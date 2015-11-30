@@ -15,6 +15,7 @@ class FlatFS:
             val_line = [str(value) for attr, value in write_object.__dict__.items()]
             val_line = map(lambda e : "''" if e == "" else e, val_line)
             file_obj.write(str(self.get_last_id() + 1) + "," + ','.join(val_line) + '\n')
+        return str(self.get_last_id())
 
     def get_all(self):
         objects = []
@@ -33,3 +34,8 @@ class FlatFS:
                 return int(reader[0]["id"])
             except IndexError:
                 return 0
+
+    def get_by_id(self, customer_id):
+        with open(self.file, 'r') as file_obj:
+            reader = csv.DictReader(file_obj)
+            return [row for row in reader if row["id"] == str(customer_id)][0]

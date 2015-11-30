@@ -2,8 +2,8 @@ from NerdsvilleCustomerPanel.Entities.Customer import Customer
 from NerdsvilleCustomerPanel.Persistence.FlatFS import FlatFS
 
 class CustomerActions:
-    def __init__(self, customer_obj=Customer()):
-        self.customer = customer_obj
+    def __init__(self):
+        self.customer = Customer()
 
     def __str__(self):
         return self.customer.fname + " " + self.customer.lname
@@ -13,7 +13,7 @@ class CustomerActions:
             if kwargs.get(attr, None) != None:
                 setattr(self.customer, attr, kwargs.get(attr, None))
         return self.customer
-        
+
     def get_all_customers(self, method):
         if method == 1:
             return FlatFS("Customer").get_all()
@@ -24,4 +24,12 @@ class CustomerActions:
           2.) PostgreSQL
         """
         if method == 1:
-            return FlatFS("Customer").save(self.customer)
+            self.customer.id = FlatFS("Customer").save(self.customer)
+            return self.customer.id
+
+    def read(self, id):
+        self.customer = FlatFS("Customer").get_by_id(id)
+
+    def update(self, method):
+        if method == 1:
+            return FlatFS("Customer").update(self.customer)
